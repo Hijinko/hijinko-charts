@@ -1,5 +1,19 @@
 apiVersion: v1
 entries:
+  radarr:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-11-19T22:15:36.414448027Z"
+    description: A Helm chart for radarr
+    digest: 8f0c04583bc0e9da8f488b55fe039ea0ad7100df34358d770d547943185b87ef
+    maintainers:
+    - name: Hijinko Bushido
+      url: https://github.com/Hijinko/hijinko-charts.git
+    name: radarr
+    type: application
+    urls:
+    - https://github.com/Hijinko/hijinko-charts/releases/download/radarr-0.1.0/radarr-0.1.0.tgz
+    version: 0.1.0
   sonarr:
   - apiVersion: v2
     appVersion: 1.16.0
