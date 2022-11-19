@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.nzbhydra2.serviceName }}
+  labels:
+    {{- include "onn.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.nzbhydra2.port }}
+      targetPort: {{ .Values.service.nzbhydra2.portName }}
+      protocol: TCP
+      name: {{ .Values.service.nzbhydra2.portName }}
+  selector:
+    {{- include "onn.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,108 @@
+{{- $fullName := include "onn.fullname" . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "onn.fullname" . }}
+  labels:
+    {{- include "onn.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "onn.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "onn.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "onn.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "0"
+      containers:
+        - name: {{ .Values.image.nzbget.name }}
+          image: '{{ .Values.image.nzbget.repository }}:{{ .Values.image.nzbget.tag | default "latest" }}'
+          envFrom:
+          - configMapRef:
+              name: nzbget-configmap
+          - secretRef:
+              name: nzbget-secret
+          ports:
+          - name: {{ .Values.service.nzbget.portName }}
+            containerPort: 6789
+            protocol: TCP
+          volumeMounts:
+          {{- if .Values.persistence.config_enabled }}
+          - name: nzbget-config
+            mountPath: /config
+          {{- end }}
+          {{- if .Values.persistence.nfs_enabled }}
+          - name: nzbget-downloads
+            mountPath: /downloads
+          {{- end }}
+        - name: {{ .Values.image.nzbhydra2.name }}
+          image: '{{ .Values.image.nzbhydra2.repository }}:{{ .Values.image.nzbhydra2.tag | default "latest" }}'
+          envFrom:
+          - configMapRef:
+              name: nzbhydra2-configmap
+          ports:
+          - name: {{ .Values.service.nzbhydra2.portName }}
+            containerPort: 5076
+            protocol: TCP
+          volumeMounts:
+          {{- if .Values.persistence.config_enabled }}
+          - name: nzbhydra2-config
+            mountPath: /config
+          {{- end }}
+          {{- if .Values.persistence.nfs_enabled }}
+          - name: nzbhydra2-downloads
+            mountPath: /downloads
+          {{- end }}
+        - name: {{ .Values.image.gluetun.name }}
+          securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
+          image: '{{ .Values.image.gluetun.repository }}:{{ .Values.image.gluetun.tag | default "latest" }}'
+          envFrom:
+          - configMapRef:
+              name: gluetun-configmap
+          - secretRef:
+              name: gluetun-secret
+      volumes:
+      {{- if .Values.persistence.nfs_enabled }}
+      - name: nzbget-downloads
+        nfs: {{- toYaml .Values.persistence.nfs | nindent 10 }}
+      - name: nzbhydra2-downloads
+        nfs: {{- toYaml .Values.persistence.nfs | nindent 10 }}
+      {{- end }}
+      {{- if .Values.persistence.config_enabled }}
+      - name: nzbget-config
+        persistentVolumeClaim:
+          claimName: nzbget-pvc
+      - name: nzbhydra2-config
+        persistentVolumeClaim:
+          claimName: nzbhydra2-pvc
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

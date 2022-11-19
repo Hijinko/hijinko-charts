@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nzbhydra2-pvc
+  labels: {{- include "onn.labels" . | nindent 4 }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: {{ .Values.persistence.storageClassName }}
+  volumeName: {{ .Values.persistence.nzbhydra2.volumeName }}
