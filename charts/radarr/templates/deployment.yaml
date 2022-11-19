@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "radarr.fullname" . }}
+  labels:
+    {{- include "radarr.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "radarr.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "radarr.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "radarr.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      dnsConfig:
+        options:
+        - name: ndots
+          value: "0"
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: '{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.service.portName }}
+              containerPort: 7878
+              protocol: TCP
+          envFrom:
+          - configMapRef:
+              name: {{ .Values.configMap.name }}
+          volumeMounts:
+          {{- if .Values.persistence.config_enabled }}
+          - name: radarr-config
+            mountPath: /config
+          {{- end }}
+          {{- if .Values.persistence.nfs_enabled }}
+          - name: radarr-movies
+            mountPath: /movies
+          - name: radarr-downloads
+            mountPath: /downloads
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      {{- if .Values.persistence.config_enabled }}
+      - name: radarr-config
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.claimName }}
+      {{- end }}
+      {{- if .Values.persistence.nfs_enabled }}
+      - name: radarr-movies
+        nfs: {{- toYaml .Values.persistence.nfs_movies | nindent 10 }}
+      - name: radarr-downloads
+        nfs: {{- toYaml .Values.persistence.nfs_downloads | nindent 10 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
