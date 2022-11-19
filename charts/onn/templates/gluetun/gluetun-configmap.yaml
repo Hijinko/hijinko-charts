@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gluetun-configmap
+  labels: {{- include "onn.labels" . | nindent 4 }}
+data: {{- toYaml .Values.configMap.gluetun.data | nindent 4 }}
