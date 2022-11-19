@@ -41,12 +41,14 @@ spec:
           - configMapRef:
               name: {{ .Values.configMap.name }}
           volumeMounts:
+          {{- if .Values.persistence.nfs_enabled }}
           - name: {{ .Values.persistence.config.name }}
             mountPath: /config
           - name: {{ .Values.persistence.tv_nfs.name }}
             mountPath: /tv
           - name: {{ .Values.persistence.downloads_nfs.name }}
             mountPath: /downloads
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
