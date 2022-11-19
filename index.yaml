@@ -3,6 +3,20 @@ entries:
   sonarr:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-11-19T21:55:39.131505038Z"
+    description: A helm chart for sonarr
+    digest: b9d7d3a37128a35e33690d5c88f043661464f3800d44b4f23e2f036d2ebea0e7
+    icon: https://avatars.githubusercontent.com/u/1082903?s=200&v=4
+    maintainers:
+    - name: Hijinko Bushido
+      url: https://github.com/hijinko
+    name: sonarr
+    type: application
+    urls:
+    - https://github.com/Hijinko/hijinko-charts/releases/download/sonarr-0.1.1/sonarr-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-11-19T21:05:14.652506278Z"
     description: A helm chart for sonarr
     digest: a9f0a6c7ff48b4d243475a7b44c0b1ecdfc54de66b968d97db582829504388bf
