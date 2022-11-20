@@ -3,6 +3,20 @@ entries:
   onn:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-11-20T10:08:04.525730209Z"
+    description: A Helm chart that combines OpenVPN (gluetun), nzbget and nzbhydra2 for usenet applications.
+    digest: 634847016048045b2dbf4db2dc8fc62f1552d3db0a82d1767136cfd41e07c085
+    icon: https://pics.freeicons.io/uploads/icons/png/16651705381606062167-512.png
+    maintainers:
+    - name: Hijinko Bushido
+      url: https://github.com/Hijinko/hijinko-charts.git
+    name: onn
+    type: application
+    urls:
+    - https://github.com/Hijinko/hijinko-charts/releases/download/onn-0.1.1/onn-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-11-19T22:30:05.943861636Z"
     description: A Helm chart that combines OpenVPN (gluetun), nzbget and nzbhydra2 for usenet applications.
     digest: 1cbd455cfd5194e83f353457ec77607d7a6904c3cd19f137cfdcd86186ca96f5
@@ -16,6 +30,19 @@ entries:
     - https://github.com/Hijinko/hijinko-charts/releases/download/onn-0.1.0/onn-0.1.0.tgz
     version: 0.1.0
   radarr:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-11-20T10:08:04.652949886Z"
+    description: A Helm chart for radarr
+    digest: 24041d06893b88ccbb79369ad372ed258e0a57f854a77006a5247ea97970ca54
+    maintainers:
+    - name: Hijinko Bushido
+      url: https://github.com/Hijinko/hijinko-charts.git
+    name: radarr
+    type: application
+    urls:
+    - https://github.com/Hijinko/hijinko-charts/releases/download/radarr-0.1.1/radarr-0.1.1.tgz
+    version: 0.1.1
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2022-11-19T22:15:36.414448027Z"
