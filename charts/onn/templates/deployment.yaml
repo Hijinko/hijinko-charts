@@ -28,10 +28,9 @@ spec:
       serviceAccountName: {{ include "onn.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      dnsConfig:
-        options:
-        - name: ndots
-          value: "0"
+      {{- with .Values.dnsConfig }}
+      dnsConfig: {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Values.image.nzbget.name }}
           image: '{{ .Values.image.nzbget.repository }}:{{ .Values.image.nzbget.tag | default "latest" }}'
