@@ -27,10 +27,9 @@ spec:
       serviceAccountName: {{ include "radarr.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      dnsConfig:
-        options:
-        - name: ndots
-          value: "0"
+      {{- with .Values.dnsConfig }}
+      dnsConfig: {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
