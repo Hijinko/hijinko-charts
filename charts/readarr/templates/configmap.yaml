@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name:  {{ .Values.configMap.name }}
+  labels: {{- include "readarr.labels" . | nindent 4}}
+data:
+  env.PUID: "{{ .Values.configMap.env.PUID }}"
+  env.PGID: "{{ .Values.configMap.env.PGID }}"
+  env.TZ: {{ .Values.configMap.env.TZ }}
+
