@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hedgedoc.fullname" . }}
+  labels:
+    {{- include "hedgedoc.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "hedgedoc.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "hedgedoc.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "hedgedoc.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.dnsConfig }}
+      dnsConfig: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: postgress
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: '{{ .Values.image.db.repository }}:{{ .Values.image.db.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.image.db.pullPolicy }}
+          ports:
+            - name: postgress-port
+              containerPort: 5432 
+              protocol: TCP
+          envFrom:
+          - configMapRef:
+              name: {{ .Values.configMap.db.name }}
+          - secretRef:
+              name: {{ .Values.secret.db.name }}
+          volumeMounts:
+          {{- if .Values.persistence.nfs_enabled }}
+          - name: {{ .Values.persistence.data_nfs.name }}
+            mountPath: /var/lib/postgresql/data
+          {{- end }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}
+          securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
+          image: '{{ .Values.image.app.repository }}:{{ .Values.image.app.tag | default "latest" }}'
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.service.portName }}
+              containerPort: 3000 
+              protocol: TCP
+          envFrom:
+          - configMapRef:
+              name: {{ .Values.configMap.app.name }}
+          volumeMounts:
+          {{- if .Values.persistence.nfs_enabled }}
+          - name: {{ .Values.persistence.uploads_nfs.name }}
+            mountPath: /hedgedoc/public/uploads
+          {{- end }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+      volumes: {{- if .Values.persistence.config_enabled }}
+      - name: {{ .Values.persistence.config.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.claimName }}
+      {{- end }}
+      {{- if .Values.persistence.nfs_enabled }}
+      - name: {{ .Values.persistence.data_nfs.name }}
+        nfs: {{- toYaml .Values.persistence.data_nfs.nfs | nindent 10 }}
+      - name: {{ .Values.persistence.uploads_nfs.name }}
+        nfs: {{- toYaml .Values.persistence.uploads_nfs.nfs | nindent 10 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}

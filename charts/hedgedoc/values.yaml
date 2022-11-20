@@ -1,0 +1,132 @@
+# Default values for hedgedoc.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  db:
+    repository: postgres 
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "13.4-alpine"
+  app:
+    repository: quay.io/hedgedoc/hedgedoc 
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "1.9.6"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  portName: hedgedoc-port
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: hedgedoc.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+dnsConfig:
+  options:
+  - name: ndots
+    value: "0"
+
+configMap:
+  db:
+    name: hedgedoc-db-configmap
+    data: 
+      POSTGRES_DB: hedgedoc
+      POSTGRES_USER: hedgedoc
+  app:
+    name: hedgedoc-app-configmap
+    data:
+      CMD_DB_URL: "postgres://hedgedoc:password@0.0.0.0:5432/hedgedoc"
+      CMD_DOMAIN: hedgedoc.local
+      CMD_URL_ADDPORT: "false"
+
+secret:
+  db:
+    name: hedgdoc-secret
+    data:
+      # default password password. change this
+      POSTGRES_PASSWORD: cGFzc3dvcmQ=
+
+persistence:
+  claimName: hedgedoc-pvc
+  storageClassName: openebs-hostpath
+  nfs_enabled: false
+  # set volumeName to reclaim a persistent volume
+  volumeName:
+
+  data_nfs:
+    name: hedgedoc-data
+    nfs:
+      server: nfs-server
+      path: # path to tv shows 
+  uploads_nfs:
+    name: hedgedoc-downloads
+    nfs:
+      server: nfs-server
+      path: # path to uploads
