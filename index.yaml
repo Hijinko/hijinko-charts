@@ -3,6 +3,20 @@ entries:
   jellyfin:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-11-20T12:21:46.208129161Z"
+    description: A helm chart for jellyfin
+    digest: 35eaeea10e1754954ffe2d4cb69f30d24ce1178097575acc4d7df4b2369b1c7e
+    icon: https://avatars.githubusercontent.com/u/45698031?s=200&v=4
+    maintainers:
+    - name: Hijinko Bushido
+      url: https://github.com/hijinko
+    name: jellyfin
+    type: application
+    urls:
+    - https://github.com/Hijinko/hijinko-charts/releases/download/jellyfin-0.1.1/jellyfin-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-11-20T11:35:16.050068002Z"
     description: A helm chart for jellyfin
     digest: 21a024384f3d400175f03ac5b8ad4c48a404d0da24346afffb8ff2d9db228ea3
