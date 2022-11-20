@@ -1,5 +1,20 @@
 apiVersion: v1
 entries:
+  jellyfin:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-11-20T11:35:16.050068002Z"
+    description: A helm chart for jellyfin
+    digest: 21a024384f3d400175f03ac5b8ad4c48a404d0da24346afffb8ff2d9db228ea3
+    icon: https://avatars.githubusercontent.com/u/1082903?s=200&v=4
+    maintainers:
+    - name: Hijinko Bushido
+      url: https://github.com/hijinko
+    name: jellyfin
+    type: application
+    urls:
+    - https://github.com/Hijinko/hijinko-charts/releases/download/jellyfin-0.1.0/jellyfin-0.1.0.tgz
+    version: 0.1.0
   onn:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -56,7 +71,36 @@ entries:
     urls:
     - https://github.com/Hijinko/hijinko-charts/releases/download/radarr-0.1.0/radarr-0.1.0.tgz
     version: 0.1.0
+  readarr:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-11-20T11:35:16.159139905Z"
+    description: A helm chart for readarr
+    digest: 280d375254bc98488317168d4dce105189f70d8a62ab56ff77351518d1ef4085
+    icon: https://avatars.githubusercontent.com/u/57576474?s=200&v=4
+    maintainers:
+    - name: Hijinko Bushido
+      url: https://github.com/hijinko
+    name: readarr
+    type: application
+    urls:
+    - https://github.com/Hijinko/hijinko-charts/releases/download/readarr-0.1.1/readarr-0.1.1.tgz
+    version: 0.1.1
   sonarr:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-11-20T11:35:16.26227018Z"
+    description: A helm chart for sonarr
+    digest: 63e3bbb6bf5b1eaf5158b05c24f410aa079105f109f65a262df084fa0e19ff39
+    icon: https://avatars.githubusercontent.com/u/1082903?s=200&v=4
+    maintainers:
+    - name: Hijinko Bushido
+      url: https://github.com/hijinko
+    name: sonarr
+    type: application
+    urls:
+    - https://github.com/Hijinko/hijinko-charts/releases/download/sonarr-0.1.3/sonarr-0.1.3.tgz
+    version: 0.1.3
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2022-11-20T09:55:52.426522746Z"
