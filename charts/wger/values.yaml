@@ -1,0 +1,177 @@
+# Default values for wger.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  web:
+    repository: wger/server
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  nginx:
+    repository: nginx
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "stable"
+  db:
+    repository: postgres
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: "alpine"
+  cache:
+    repository: redis
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+configMap:
+  data:
+    # Django's secret key, change to a 50 character random string if you are running
+    # this instance publicly. For an online generator, see e.g. https://djecrety.ir/
+    SECRET_KEY: wger-docker-supersecret-key-1234567890!@#$%^&*(-_)
+    # Signing key used for JWT, use something different than the secret key
+    SIGNING_KEY: wger-docker-secret-jwtkey-1234567890!@#$%^&*(-_=+)
+    # The 'from' address used when sending emails
+    FROM_EMAIL: info@example.com
+    # The server's timezone, for a list of possible names:
+    # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+    TIME_ZONE: America/New_York
+    #
+    # These settings usually don't need changing
+    #
+    #
+    # Application
+    ALLOW_REGISTRATION: "True"
+    ALLOW_GUEST_USERS: "True"
+    ALLOW_UPLOAD_VIDEOS: "True"
+    # Note that setting these to true will always perform a sync during startup,
+    # even if the data is already current and will take some time. Usually you don't
+    # need to perform these steps so often and a manual trigger (see README) is
+    # usually enough.
+    SYNC_EXERCISES_ON_STARTUP: "False"
+    DOWNLOAD_EXERCISE_IMAGES_ON_STARTUP: "False"
+    #
+    # Database
+    DJANGO_DB_ENGINE: django.db.backends.postgresql
+    DJANGO_DB_DATABASE: wger
+    DJANGO_DB_USER: wger
+    DJANGO_DB_PASSWORD: wger
+    DJANGO_DB_HOST: db
+    DJANGO_DB_PORT: "5432"
+    # Perform any new database migrations on startup
+    DJANGO_PERFORM_MIGRATIONS: "True"
+    #
+    # Cache
+    DJANGO_CACHE_BACKEND: django_redis.cache.RedisCache
+    DJANGO_CACHE_LOCATION: redis://cache:6379/1
+    # 60*60*24*15, 15 Days
+    DJANGO_CACHE_TIMEOUT: "1296000"
+    DJANGO_CACHE_CLIENT_CLASS: django_redis.client.DefaultClient
+    #
+    # Brute force login attacks
+    # https://django-axes.readthedocs.io/en/latest/index.html
+    AXES_ENABLED: "False"
+    AXES_FAILURE_LIMIT: "10"
+    # in minutes
+    AXES_COOLOFF_TIME: "30"
+    AXES_HANDLER: axes.handlers.cache.AxesCacheHandler
+    #
+    # Others
+    DJANGO_DEBUG: "False"
+    WGER_USE_GUNICORN: "True"
+    EXERCISE_CACHE_TTL: "600"
+    SITE_URL: http://localhost
+    #
+    # JWT auth
+    # The lifetime duration of the access token, in minutes
+    ACCESS_TOKEN_LIFETIME: "10"
+    # The lifetime duration of the refresh token, in hours
+    REFRESH_TOKEN_LIFETIME: "24"
+    #
+    # Other possible settings
+    # RECAPTCHA_PUBLIC_KEY
+    # RECAPTCHA_PRIVATE_KEY
+    # NOCAPTCHA
+    # https://docs.djangoproject.com/en/4.1/topics/email/#smtp-backend
+    # ENABLE_EMAIL
+    # EMAIL_HOST
+    # EMAIL_PORT
+    # EMAIL_HOST_USER
+    # EMAIL_HOST_PASSWORD
+    # EMAIL_USE_TLS
+    # EMAIL_USE_SSL
+    # DJANGO_MEDIA_ROOT
+    # DJANGO_STATIC_ROOT
