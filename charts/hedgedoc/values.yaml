@@ -9,7 +9,8 @@ image:
     repository: postgres 
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "13.4-alpine"
+    #tag: "13.4-alpine"
+    tag: "alpine"
   app:
     repository: quay.io/hedgedoc/hedgedoc 
     pullPolicy: IfNotPresent
@@ -56,8 +57,8 @@ ingress:
   hosts:
     - host: hedgedoc.local
       paths:
-        - path: /
-          pathType: ImplementationSpecific
+        - path: "/"
+          pathType: Prefix
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -102,9 +103,14 @@ configMap:
   app:
     name: hedgedoc-app-configmap
     data:
+      # format postgres://<username>:<password>@<url>:5432/<database>
       CMD_DB_URL: "postgres://hedgedoc:password@0.0.0.0:5432/hedgedoc"
       CMD_DOMAIN: hedgedoc.local
       CMD_URL_ADDPORT: "false"
+      CMD_PROTOCOL_USESSL: "true"
+      CMD_ALLOW_EMAIL_REGISTER: "false"
+      NODE_ENV: production
+      CMD_ALLOW_ANONYMOUS: "false"
 
 secret:
   db:
@@ -123,10 +129,10 @@ persistence:
   data_nfs:
     name: hedgedoc-data
     nfs:
-      server: nfs-server
-      path: # path to tv shows 
+      server: 
+      path: 
   uploads_nfs:
-    name: hedgedoc-downloads
+    name: hedgedoc-uploads
     nfs:
-      server: nfs-server
-      path: # path to uploads
+      server:
+      path:
