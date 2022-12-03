@@ -1,14 +1,14 @@
-# Default values for hedgedoc.
+# Default values for postgres.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: quay.io/hedgedoc/hedgedoc 
+  repository: postgres
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.9.6"
+  tag: "alpine"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -37,21 +37,20 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  portName: hedgedoc-port
   type: ClusterIP
-  port: 80
+  port: 5432
 
 ingress:
-  enabled: true
-  className: "nginx"
+  enabled: false
+  className: ""
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: hedgedoc.local
+    - host: chart-example.local
       paths:
-        - path: "/"
-          pathType: Prefix
+        - path: /
+          pathType: ImplementationSpecific
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -83,21 +82,20 @@ tolerations: []
 affinity: {}
 
 configMap:
-  name: hedgedoc-app-configmap
+  name: hedgedoc-db-configmap
   data:
-    # format postgres://<username>:<password>@<url>:5432/<database>
-    # Change the URL based on the name of the application and postgres
-    CMD_DB_URL: "postgres://hedgedoc:password@hedgedoc-postgres:5432/hedgedoc"
-    CMD_DOMAIN: hedgedoc.local.net
-    CMD_URL_ADDPORT: "false"
-    CMD_PROTOCOL_USESSL: "true"
-    CMD_ALLOW_EMAIL_REGISTER: "false"
-    NODE_ENV: production
-    CMD_ALLOW_ANONYMOUS: "false"
+    POSTGRES_DB: hedgedoc
+    POSTGRES_USER: hedgedoc
+
+secret:
+  name: hedgdoc-secret
+  data:
+    # default password password. change this
+    POSTGRES_PASSWORD: cGFzc3dvcmQ=
 
 persistence:
   nfs_enabled: false
-  nfs_name: hedgedoc-uploads
+  nfs_name: hedgedoc-data
   nfs:
     server:
     path:
